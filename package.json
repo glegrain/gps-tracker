@@ -1,0 +1,11 @@
+{
+    "name": "restAPItutorial",
+    "description": "",
+    "version": "0.1.0",
+    "author": "",
+    "dependencies": {},
+    "devDependencies": {
+        "express" : "3.x",
+        "mysql" : ""
+    }
+}
