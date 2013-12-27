@@ -26,18 +26,18 @@ var connection = mysql.createConnection({
 
 exports.findAll = function(req, res) {
     // connection.query('SELECT * FROM `devices`', function(err, rows){
-    //     res.send([{name:'gps1'}, {name:'gps2'}]);
+         res.send([{name:'gps1'}, {name:'gps2'}]);
     //     console.log(rows);
     // });
 
-    if (connection) {
-        connection.query('select * FROM `devices`', function(err, rows, fields) {
-            res.contentType('application/json');
-            if (err) throw err;
-            res.write(JSON.stringify(rows));
-            res.end();
-        });
-    }
+    // if (connection) {
+    //     connection.query('select * FROM `devices`', function(err, rows, fields) {
+    //         res.contentType('application/json');
+    //         if (err) throw err;
+    //         res.write(JSON.stringify(rows));
+    //         res.end();
+    //     });
+    // }
 };
 
 exports.findById = function(req, res) {
