@@ -1,11 +1,26 @@
 {
-    "name": "restAPItutorial",
-    "description": "",
-    "version": "0.1.0",
-    "author": "",
-    "dependencies": {},
-    "devDependencies": {
-        "express" : "3.x",
-        "mysql" : ""
-    }
+  "name": "restAPItutorial",
+  "description": "GPS tracker API",
+  "version": "0.1.0",
+  "author": "Guillaume Legrain",
+  "dependencies": {
+    "express": "~3.4.7",
+    "mysql": "~2.0.0-rc2",
+    "restify": "~2.6.1"
+  },
+  "devDependencies": {
+    "express": "3.x",
+    "mysql": ""
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "main": "server.js",
+  "keywords": [
+    "api",
+    "rest",
+    "gps",
+    "tracker"
+  ],
+  "license": "BSD"
 }
