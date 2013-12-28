@@ -23,6 +23,23 @@
 //     console.log(err); return;
 // });
 
+var pg = require('pg');
+var conString = process.env.DATABASE_URL || 'postgres://localhost:5432/gpstracker';
+var client = new pg.Client(conString);
+client.connect(function(err) {
+  if(err) {
+    return console.error('could not connect to postgres', err);
+  }
+  client.query('SELECT NOW() AS "theTime"', function(err, result) {
+    if(err) {
+      return console.error('error running query', err);
+    }
+    console.log(result.rows[0].theTime);
+    //output: Tue Jan 15 2013 19:12:47 GMT-600 (CST)
+    client.end();
+  });
+});
+
 
 exports.findAll = function(req, res) {
     // connection.query('SELECT * FROM `devices`', function(err, rows){
@@ -41,22 +58,22 @@ exports.findAll = function(req, res) {
 };
 
 exports.findById = function(req, res) {
-    // res.send({id:req.params.id, name: "gps1", description: "gps 1 description"});
-    var id = req.params.id;
-    if (connection) {
-        var queryString = 'SELECT * FROM `devices` WHERE `id` = ?';
-        connection.query(queryString, [id], function(err, rows, fields) {
-            if (err) throw err;
-            res.contentType('application/json');
-            res.write(JSON.stringify(rows));
-            res.end();
-        });
-    }
+    res.send({id:req.params.id, name: "gps1", description: "gps 1 description"});
+    // var id = req.params.id;
+    // if (connection) {
+    //     var queryString = 'SELECT * FROM `devices` WHERE `id` = ?';
+    //     connection.query(queryString, [id], function(err, rows, fields) {
+    //         if (err) throw err;
+    //         res.contentType('application/json');
+    //         res.write(JSON.stringify(rows));
+    //         res.end();
+    //     });
+    // }
 };
 
 
-exports.addDevice = function(req, res) {};
-exports.updateDevice = function(req, res) {};
-exports.deleteDevice = function(req, res) {};
+exports.addDevice = function(req, res) {res.send("TODO");};
+exports.updateDevice = function(req, res) {res.send("TODO");};
+exports.deleteDevice = function(req, res) {res.send("TODO");};
 
 

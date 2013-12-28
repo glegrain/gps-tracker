@@ -13,10 +13,7 @@ var device  = require('./routes/devices');
 
 
 //     app.get('/devices', device.findAll);
-//     app.get('/devices/:id', device.findById);
-//     app.post('/devices', device.addDevice);
-//     app.put('/devices/:id', device.updateDevice);
-//     app.delete('/devices/:id', device.deleteDevice);
+
  
 // app.listen(app.port, function() {
 //     console.log('Listening on port 3000...');
@@ -41,7 +38,12 @@ app.configure(function () {
 app.get('/', function(req, res) {
   res.send('Hello World!');
 });
+
 app.get('/devices', device.findAll);
+app.get('/devices/:id', device.findById);
+app.post('/devices', device.addDevice);
+app.put('/devices/:id', device.updateDevice);
+app.delete('/devices/:id', device.deleteDevice);
 
 var port = process.env.PORT || 3000;
 app.listen(port, function() {
