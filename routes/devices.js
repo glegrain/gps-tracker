@@ -5,16 +5,16 @@
 // [maxResults] unsigned interger
 // [pageToken]
 
-var mysql      = require('mysql');
+// var mysql      = require('mysql');
 
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : 'root',
- // socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock',
-  //port     : '3306',
-  database : 'gpstracker'
-});
+// var connection = mysql.createConnection({
+//   host     : 'localhost',
+//   user     : 'root',
+//   password : 'root',
+//  // socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock',
+//   //port     : '3306',
+//   database : 'gpstracker'
+// });
 
 
 // connection.connect(function(err) {

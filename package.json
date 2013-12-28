@@ -6,7 +6,8 @@
   "dependencies": {
     "express": "~3.4.7",
     "mysql": "~2.0.0-rc2",
-    "restify": "~2.6.1"
+    "restify": "~2.6.1",
+    "logfmt": "~0.18.1"
   },
   "devDependencies": {
     "express": "3.x",
