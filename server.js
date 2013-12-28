@@ -1,28 +1,7 @@
-// var express = require('express');
-// var restify = require('restify');
-var device  = require('./routes/devices');
-
-// var app = express();
-
-
-
-// //http.createServer(function (request, response) {
-// //    response.writeHead(200, {'Content-Type': 'text/plain'});
-// //    response.end('Hello World\n');
-// //}).listen(3000);
-
-
-//     app.get('/devices', device.findAll);
-
- 
-// app.listen(app.port, function() {
-//     console.log('Listening on port 3000...');
-// });
-
-
-// web.js
+// server.js
 var express = require("express");
 var logfmt = require("logfmt");
+var device  = require('./routes/devices');
 var app = express();
 
 // Log requests using key value logging convention adopted by Heroku.
@@ -30,22 +9,42 @@ var app = express();
 app.use(logfmt.requestLogger());
 
 app.configure(function () {
-    //app.set('port', process.env.PORT || 3000);
+    app.set('port', process.env.PORT || 3000);
     app.use(express.logger('dev'));     /* 'default', 'short', 'tiny', 'dev' */
     app.use(express.bodyParser());
 });
+
+
+// create an error with .status. we
+// can then use the property in our
+// custom error handler (Connect repects this prop as well)
+
+function error(status, msg) {
+  var err = new Error(msg);
+  err.status = status;
+  return err;
+}
+
+
 
 app.get('/', function(req, res) {
   res.send('Hello World!');
 });
 
-app.get('/devices', device.findAll);
-app.get('/devices/:id', device.findById);
-app.post('/devices', device.addDevice);
-app.put('/devices/:id', device.updateDevice);
-app.delete('/devices/:id', device.deleteDevice);
+app.get('/api/test', device.test);
+app.post('/api/query', device.query);
 
-var port = process.env.PORT || 3000;
-app.listen(port, function() {
-  console.log("Listening on " + port);
+// TODO: API key verification
+// we now can assume the api key is valid,
+// and simply expose the data
+app.get('/api/devices', device.findAll);
+app.get('/api/devices/:id', device.findById);
+app.post('/api/devices', device.addDevice);
+app.put('/api/devices/:id', device.updateDevice);
+app.delete('/api/devices/:id', device.deleteDevice);
+
+
+//var port = process.env.PORT || 3000;
+app.listen(app.get('port'), function() {
+  console.log("Listening on " + app.get('port'));
 });
