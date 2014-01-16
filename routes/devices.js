@@ -23,39 +23,42 @@
 //     console.log(err); return;
 // });
 
-var pg = require('pg');
-var conString = process.env.HEROKU_POSTGRESQL_COPPER_URL || 'postgres://localhost:5432/gpstracker'; // heroku defines DATABASE_URL
-//var conString = process.env.HEROKU_POSTGRESQL_COPPER_URL || 'postgres://prszbsgoyrzzak:vow4DCek_eqiUfFMiQpa9Pj4y-@ec2-54-228-227-194.eu-west-1.compute.amazonaws.com:5432/d8hg0ujmn2vs6e';
-var client = new pg.Client(conString);
-client.connect(function(err) {
-  if(err) {
-    return console.error('could not connect to postgres', err);
-  }
-
-  //client.query('CREATE TABLE "devices" ( "deviceId" integer not null, "name" varchar(128) not null);');
+// get db connection
+var db = require('../routes/database.js');
+var client = db.getClient();
 
 
-  // client.query('SELECT NOW() AS "theTime"', function(err, result) {
-  //   if(err) {
-  //     return console.error('error running query', err);
-  //   }
-  //   console.log(result.rows[0].theTime);
-  //   //output: Tue Jan 15 2013 19:12:47 GMT-600 (CST)
-  //   client.end();
-  // });
-});
+// // listen to db
+// client.query("LISTEN watchers");
+// client.on('notification', function(msg) {
+//     console.log('New notification:');
+//     console.log(msg);
+// });
+
+// client.query('LISTEN "notifications_channel"');
+
+// // traitement à la réception de nouvelles notifications
+// client.on('notification', function(notification) {
+//     // le payload récupéré ici est la chaîne de données passée en argument à pg_notify dans notre procédure SQL
+//     console.log('New notification:');
+//     console.log(notification.payload);
+//     /* push vers le client avec socket.io */
+// });
+
+
 
 
 // TESTING ONLY !!
-exports.test = function(req, res) {
-     client.query('SELECT * FROM devices', function(err, result) {
+exports.test = function(req, res, next) {
+    console.log('TEST REQUEST');
+    client.query('SELECT * FROM devices', function(err, result) {
     //NOTE: error handling not present
     // var json = JSON.stringify(result.rows);
     // res.writeHead(200, {'content-type':'application/json', 'content-length':json.length}); 
     // res.end(json);
     res.json(result.rows);
   });
-}
+};
 
 
 // TESTING ONLY: VERY INSECURE !!!! 
@@ -65,15 +68,9 @@ exports.query = function(req, res) {
         return;
     }
     client.query(req.body.query, function(err, result) {
-        //NOTE: error handling not present
-        //var json = JSON.stringify(result.rows);
-        //res.writeHead(200, {'content-type':'application/json', 'content-length':json.length}); 
-        //res.end(json);
-        // console.log(req.body);
-        // res.end("QUERY:" + req.body.query);
         res.json(result.rows);
     });
-}
+};
 
 
 
@@ -95,16 +92,17 @@ exports.findAll = function(req, res) {
 
 exports.findById = function(req, res) {
     //res.json({id:req.params.id, name: "gps1", description: "gps 1 description"});
-    var id = parseInt(req.params.id);
+    var id = parseInt(req.params.id, 10);
 
     // Check if id is an integer
-    if (id !== parseInt(id)) {
+    if (id !== parseInt(id, 10)) {
+        //throw "not an integer !"
         res.send(500, { error: 'Make sure id is an integer.' });
         return;
     }
 
     if (client) {
-       var queryString = 'SELECT * FROM devices WHERE device_id = $1';
+       var queryString = 'SELECT * FROM devices WHERE id = $1';
        client.query(queryString, [id], function(err, result) {
     //         if (err) throw err;
                 if (err) {
@@ -122,8 +120,33 @@ exports.findById = function(req, res) {
 };
 
 
-exports.addDevice = function(req, res) {res.send("TODO");};
-exports.updateDevice = function(req, res) {res.send("TODO");};
-exports.deleteDevice = function(req, res) {res.send("TODO");};
+exports.addDevice = function(req, res) {
+        if (!req.body.device_name || !req.body.device_id) {
+        res.send(400, {error: 'please specify device_name and device_id'} );
+        return;
+    }
 
+    var device_id =  req.body.device_id;
+    var device_name = req.body.device_name;
 
+    var queryString = 'INSERT INTO devices VALUES ($1, $2);';
+    // TODO: fix duplicate entry bug.
+    client.query(queryString, [device_id, [device_name]], function(err, result) {
+        if (err) {
+            console.log(err);
+            res.send(500, { error: 'something blew up' });
+            return;
+        }
+        console.log(result);
+        //NOTE: show devices ??
+        res.send(201);
+    });
+};
+
+exports.updateDevice = function(req, res) {
+    res.send("TODO");
+};
+
+exports.deleteDevice = function(req, res) {
+    res.send("TODO");
+};
