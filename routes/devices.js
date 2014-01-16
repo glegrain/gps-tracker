@@ -102,7 +102,7 @@ exports.findById = function(req, res) {
     }
 
     if (client) {
-       var queryString = 'SELECT * FROM devices WHERE id = $1';
+       var queryString = 'SELECT * FROM devices WHERE device_id = $1';
        client.query(queryString, [id], function(err, result) {
     //         if (err) throw err;
                 if (err) {
