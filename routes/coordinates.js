@@ -24,9 +24,9 @@ client.on('notification', function(msg) {
 });
 
 exports.test = function(req, res) {
-    pusher.trigger('test_channel', 'my_event', {
-        "message": Date()
-    });
+    // pusher.trigger('test_channel', 'my_event', {
+    //     "message": Date()
+    // });
     res.send("Test function executed");
     console.log("Test function executed");
 };
