@@ -58,9 +58,13 @@ body {
   <a href="#overview">Overview</a>
   <ul class="nav">
     
-    <li><a href="#Devices">/api/coordinates</a></li>
+    <li><a href="#Devices">/api/devices</a></li>
+    
+    <li><a href="#Devices">/api/devices/:id</a></li>
     
     <li><a href="#Devices">/api/devices</a></li>
+    
+    <li><a href="#Devices">/api/devices/:id</a></li>
     
     <li><a href="#Devices">/api/devices/:id</a></li>
     
@@ -72,35 +76,6 @@ body {
         <div class="col-md-9">
           <div class="panel-group" id="accordion">
             
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#test">
-          GET /api/coordinates
-        </a>
-      </h4>
-    </div>
-    <div id="test" class="panel-collapse collapse">
-      <div class="panel-body">
-        <p>Test function used for debug and prototyping.</p>
-
-<p>TODO: REMOVE ON PRODUCTION API</p>
-
-<p>Example:</p>
-
-<p>GET /api/test</p>
-
-<p>Response:</p>
-
-<p>Errors:</p>
-
-<ul>
-<li>This function has no error handling.</li>
-</ul>
-      </div>
-    </div>
-  </div>
-
   <div class="panel panel-default">
     <div class="panel-heading">
       <h4 class="panel-title">
@@ -194,6 +169,67 @@ body {
 <ul>
 <li>TODO</li>
 </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#addDevice">
+          POST /api/devices
+        </a>
+      </h4>
+    </div>
+    <div id="addDevice" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p>Registers a new device.</p>
+
+<p>Example:</p>
+
+<p>POST /api/device/1</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#updateDevice">
+          PUT /api/devices/:id
+        </a>
+      </h4>
+    </div>
+    <div id="updateDevice" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p>Change information for a device.</p>
+
+<p>TODO</p>
+
+<p>Example:</p>
+
+<p>PUT /api/device/1</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#deleteDevice">
+          DELETE /api/devices/:id
+        </a>
+      </h4>
+    </div>
+    <div id="deleteDevice" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p>Removes a device.</p>
+
+<p>TODO</p>
+
+<p>Example:</p>
+
+<p>DELETE /api/device/1</p>
       </div>
     </div>
   </div>

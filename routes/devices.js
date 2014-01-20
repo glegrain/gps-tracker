@@ -49,25 +49,6 @@ var client = db.getClient();
 
 
 // TESTING ONLY !!
-/**
- * Test function used for debug and prototyping.
- *
- * TODO: REMOVE ON PRODUCTION API
- * 
- * Example:
- *
- *    GET /api/test
- *
- * Response:
- * 
- * 
- * Errors:
- *
- *  - This function has no error handling.
- *
- * @param The standard HTTP request object 
- * @param The standard HTTP response object
- */
 exports.test = function(req, res, next) {
     console.log('TEST REQUEST');
     client.query('SELECT * FROM devices', function(err, result) {
@@ -152,7 +133,7 @@ exports.findAll = function(req, res) {
 /**
  * Retrieves device information.
  *
-* Examples:
+ * Examples:
  *
  *    GET /api/device/1
  *
@@ -207,7 +188,14 @@ exports.findById = function(req, res) {
     }
 };
 
-
+/**
+ * Registers a new device.
+ *
+ * Example:
+ *
+ *    POST /api/device/1
+ *
+ */
 exports.addDevice = function(req, res) {
         if (!req.body.device_name || !req.body.device_id) {
         res.send(400, {error: 'please specify device_name and device_id'} );
@@ -231,10 +219,30 @@ exports.addDevice = function(req, res) {
     });
 };
 
+/**
+ * Change information for a device.
+ *
+ * TODO
+ *
+ * Example:
+ *
+ *    PUT /api/device/1
+ *
+ */
 exports.updateDevice = function(req, res) {
     res.send("TODO");
 };
 
+/**
+ * Removes a device.
+ *
+ * TODO
+ *
+ * Example:
+ *
+ *    DELETE /api/device/1
+ *
+ */
 exports.deleteDevice = function(req, res) {
     res.send("TODO");
 };
