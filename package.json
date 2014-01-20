@@ -12,7 +12,8 @@
     "restify": "~2.6.1",
     "logfmt": "~0.18.1",
     "pg": "~2.10.0",
-    "socket.io": "~0.9.16"
+    "socket.io": "~0.9.16",
+    "express-api-docs": "0.0.4"
   },
   "scripts": {
     "start": "node server.js"

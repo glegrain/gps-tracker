@@ -1,6 +1,5 @@
 // get db connection
-var db = require('../routes/database.js');
-var client = db.getClient();
+var client = require('../routes/database.js').getClient();
 
 // var Pusher = require('pusher');
 

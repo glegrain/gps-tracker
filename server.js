@@ -1,8 +1,9 @@
 // server.js
 var express = require("express");
 var logfmt = require("logfmt");
-var device  = require('./routes/devices');
-var coordinate  = require('./routes/coordinates');
+var fs = require('fs');
+// var device  = require('./routes/devices');
+// var coordinate  = require('./routes/coordinates');
 var app = express();
 
 
@@ -57,25 +58,36 @@ app.use(function(err, req, res, next){
 
 
 app.get('/', function(req, res) {
-  res.send('Hello World!');
+  //res.send('<h1>GPS API server</h1><p> View <a href="doc" >Documentation</a></p>');
+  var data = fs.readFile( __dirname + '/index.html', function(err, data) {
+    res.send(data.toString());
+  });  
 });
 
-app.get('/api/test', device.test);
-app.get('/api/coordinates', coordinate.test);
-app.get('/api/coordinates/:id', coordinate.getCurPosition);
-app.get('/api/coordinates/:id/:latitude/:longitude', coordinate.updatePosition); //TODO:change to PUT or POST
-app.post('/api/coordinates', coordinate.updatePosition);
+// provide API documentation (link to static website)
+app.use('/doc', express.static('./doc'));
 
-app.post('/api/query', device.query);
 
-// TODO: API key verification
-// we now can assume the api key is valid,
-// and simply expose the data
-app.get('/api/devices', device.findAll);
-app.get('/api/devices/:id', device.findById);
-app.post('/api/devices', device.addDevice);
-app.put('/api/devices/:id', device.updateDevice);
-app.delete('/api/devices/:id', device.deleteDevice);
+// routes
+var routes = require('./router');
+routes.setup(app);
+
+// app.get('/api/test', device.test);
+// app.get('/api/coordinates', coordinate.test);
+// app.get('/api/coordinates/:id', coordinate.getCurPosition);
+// app.get('/api/coordinates/:id/:latitude/:longitude', coordinate.updatePosition); //TODO:change to PUT or POST
+// app.post('/api/coordinates', coordinate.updatePosition);
+
+// app.post('/api/query', device.query);
+
+// // TODO: API key verification
+// // we now can assume the api key is valid,
+// // and simply expose the data
+// app.get('/api/devices', device.findAll);
+// app.get('/api/devices/:id', device.findById);
+// app.post('/api/devices', device.addDevice);
+// app.put('/api/devices/:id', device.updateDevice);
+// app.delete('/api/devices/:id', device.deleteDevice);
 
 
 // our custom JSON 404 middleware. Since it's placed last
@@ -86,6 +98,8 @@ app.delete('/api/devices/:id', device.deleteDevice);
  });
 
 
+// View possible requests
+//console.log(app.routes);
 
 
 var io = require('socket.io').listen(
