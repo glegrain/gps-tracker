@@ -64,6 +64,8 @@ body {
     
     <li><a href="#Devices">/api/devices/:id</a></li>
     
+    <li><a href="#Devices">/api/coordinates/:id</a></li>
+    
   </ul>
   </div>
         </div>
@@ -180,6 +182,41 @@ body {
   "date_added": "2014-01-16T23:01:12.132Z"
 }
 </code></pre>
+
+<p>Errors:</p>
+
+<ul>
+<li><code>500</code> with a database error</li>
+</ul>
+
+<p>Error Response:</p>
+
+<ul>
+<li>TODO</li>
+</ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#getCurPosition">
+          GET /api/coordinates/:id
+        </a>
+      </h4>
+    </div>
+    <div id="getCurPosition" class="panel-collapse collapse in">
+      <div class="panel-body">
+        <p>Retrieves device position.</p>
+
+<p>Examples:</p>
+
+<p>GET /api/coordinates/1</p>
+
+<p>Response:</p>
+
+<p>Returns the coordinates associated with a device as an object, as in:<br />   {<br />     "id": 2,<br />     "device_id": 1,<br />     "latitude": 10,<br />     "longitude": 10,<br />     "timestamp": "2014-01-16T23:44:18.969Z"<br />   }</p>
 
 <p>Errors:</p>
 
