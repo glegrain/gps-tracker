@@ -60,6 +60,35 @@ exports.updatePosition = function(req, res) {
 };
 
 
+/**
+ * Retrieves device position.
+ *
+ * Examples:
+ *
+ *    GET /api/coordinates/1
+ *
+ * Response:
+ * 
+ *  Returns the coordinates associated with a device as an object, as in:
+ *    {
+ *      "id": 2,
+ *      "device_id": 1,
+ *      "latitude": 10,
+ *      "longitude": 10,
+ *      "timestamp": "2014-01-16T23:44:18.969Z"
+ *    }
+ * 
+ * Errors:
+ *
+ *  - `500` with a database error
+ *
+ * Error Response:
+ *
+ * - TODO
+ *
+ * @param request The standard http request
+ * @param response The standard http response
+ */
 exports.getCurPosition = function(req, res) {
     console.log("gettting current position");
     var id = parseInt(req.params.id, 10);
