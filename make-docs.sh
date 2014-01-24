@@ -6,4 +6,4 @@
 
 var api = require('express-api-docs');
 
-api.generate('server.js', 'doc/index.html');
+api.generate('server.js', 'public/doc/index.html');

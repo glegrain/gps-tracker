@@ -15,13 +15,14 @@ app.configure(function () {
     app.set('port', process.env.PORT || 3000);
     app.use(express.logger('dev'));     /* 'default', 'short', 'tiny', 'dev' */  // logging level
     app.use(express.bodyParser());
+    //TODO: app.use(express.favicon(__dirname + '/public/images/favicon.ico'));
 });
 
 
 // create an error with .status. we
 // can then use the property in our
 // custom error handler (Connect repects this prop as well)
-
+// TODO: place in seperate .js file then exports = error
 function error(status, msg) {
   var err = new Error(msg);
   err.status = status;
@@ -59,13 +60,22 @@ app.use(function(err, req, res, next){
 
 app.get('/', function(req, res) {
   //res.send('<h1>GPS API server</h1><p> View <a href="doc" >Documentation</a></p>');
-  var data = fs.readFile( __dirname + '/index.html', function(err, data) {
-    res.send(data.toString());
-  });  
+  // var data = fs.readFile( __dirname + '/index.html', function(err, data) {
+  //   res.send(data.toString());
+  // });
+  res.sendfile( __dirname + '/public/index.html');
 });
 
 // provide API documentation (link to static website)
-app.use('/doc', express.static('./doc'));
+//app.use('/doc', express.static('./doc'));
+
+// provides access to files in public folder using real filenames
+app.use(express.static(__dirname + '/public'));
+
+//Demo page
+app.get('/demo', function(req, res) {
+  res.sendfile( __dirname + '/public/demo.html');
+});
 
 
 // routes
@@ -101,15 +111,11 @@ routes.setup(app);
 // View possible requests
 //console.log(app.routes);
 
-
-var io = require('socket.io').listen(
-
 //var port = process.env.PORT || 3000;
-app.listen(app.get('port'), function() {
+var server = app.listen(app.get('port'), function() {
   console.log("Listening on " + app.get('port'));
-})
-
- );
+});
+var io = require('socket.io').listen(server);
 
 //io.set('destroy upgrade',false);
 
@@ -127,3 +133,24 @@ io.sockets.on('connection', function (socket) {
     console.log(data);
   });
 });
+
+
+
+
+// Clean shutdown
+cleanUp = function () {
+
+   server.close(function () {
+     console.log( "Closed out remaining connections.");
+     // TODO:Close db connections, etc.
+     process.exit();
+   });
+
+   setTimeout( function () {
+     console.error("Could not close connections in time, forcefully shutting down");
+     process.exit(1);
+   }, 30*1000);
+
+};
+process.on('SIGTERM', cleanUp);
+process.on( 'SIGINT', cleanUp);

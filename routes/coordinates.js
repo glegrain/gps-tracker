@@ -12,6 +12,34 @@ var client = require('../routes/database.js').getClient();
 
 
 
+// Demo device
+var device1Poistion = {
+  "id": 2,
+  "device_id": 1,
+  "latitude": 48.85856,
+  "longitude": 2.34963,
+  "timestamp": "2014-01-16T23:44:18.969Z"
+};
+var fs = require('fs');
+var fileJSON = fs.readFileSync(__dirname + '/parisESIEE.json');
+var device1Coords = JSON.parse(fileJSON).features[0].geometry.coordinates;
+var i = 0;
+var parseCoords  = function(coordinates) {
+    //console.log("Updating dummy device position")
+    device1Poistion.longitude = coordinates[0];
+    device1Poistion.latitude = coordinates[1];
+    //console.log(device1Poistion);
+};
+var getNextCoord = function() {
+    if (i >= device1Coords.length) {
+        i = 0;
+    }
+    parseCoords(device1Coords[i]);
+    i++;
+};
+setInterval(getNextCoord,1000);
+
+
 client.query("LISTEN watchers");
 client.query("LISTEN position_watcher");
 client.on('notification', function(msg) {
@@ -63,6 +91,10 @@ exports.updatePosition = function(req, res) {
 /**
  * Retrieves device position.
  *
+ * Notes:
+ * 
+ *   device 1 can be used for testing, it goes from Paris to ESIEE.
+ *
  * Examples:
  *
  *    GET /api/coordinates/1
@@ -99,6 +131,11 @@ exports.getCurPosition = function(req, res) {
         //throw "not an integer !"
         res.send(500, { error: 'Make sure id is an integer.' });
         return;
+    }
+
+    // if device 1, send demo data
+    if ( id === 1 ) {
+        res.json(device1Poistion);
     }
 
     var queryString = 'SELECT * FROM coordinates WHERE coordinates.device_id = $1 ORDER BY timestamp DESC LIMIT 1;';
