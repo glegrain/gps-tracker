@@ -136,6 +136,7 @@ exports.getCurPosition = function(req, res) {
     // if device 1, send demo data
     if ( id === 1 ) {
         res.json(device1Poistion);
+        return;
     }
 
     var queryString = 'SELECT * FROM coordinates WHERE coordinates.device_id = $1 ORDER BY timestamp DESC LIMIT 1;';
