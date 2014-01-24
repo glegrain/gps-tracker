@@ -29,6 +29,27 @@ function error(status, msg) {
   return err;
 }
 
+
+app.get('/', function(req, res) {
+  //res.send('<h1>GPS API server</h1><p> View <a href="doc" >Documentation</a></p>');
+  // var data = fs.readFile( __dirname + '/index.html', function(err, data) {
+  //   res.send(data.toString());
+  // });
+  res.sendfile( __dirname + '/public/index.html');
+});
+
+// provide API documentation (link to static website)
+//app.use('/doc', express.static('./doc'));
+
+// provides access to files in public folder using real filenames
+app.use(express.static(__dirname + '/public'));
+
+//Demo page
+app.get('/demo', function(req, res) {
+  res.sendfile( __dirname + '/public/demo.html');
+});
+
+
 // Add headers to allow cross domain requests
 app.use(function (req, res, next) {
     // Website you wish to allow to connect
@@ -58,24 +79,6 @@ app.use(function(err, req, res, next){
 });
 
 
-app.get('/', function(req, res) {
-  //res.send('<h1>GPS API server</h1><p> View <a href="doc" >Documentation</a></p>');
-  // var data = fs.readFile( __dirname + '/index.html', function(err, data) {
-  //   res.send(data.toString());
-  // });
-  res.sendfile( __dirname + '/public/index.html');
-});
-
-// provide API documentation (link to static website)
-//app.use('/doc', express.static('./doc'));
-
-// provides access to files in public folder using real filenames
-app.use(express.static(__dirname + '/public'));
-
-//Demo page
-app.get('/demo', function(req, res) {
-  res.sendfile( __dirname + '/public/demo.html');
-});
 
 
 // routes
