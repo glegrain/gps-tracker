@@ -74,6 +74,7 @@
    var map;
    var marker;
    var infoWindow;
+   var poly;
 
   function initialize() {
     var mapOptions = {
@@ -137,8 +138,29 @@
     path.push(new google.maps.LatLng( data.latitude, data.longitude));
   }
 
+  function setPath(data) {
+    console.log(data);
+    var path = poly.getPath();
+    path.push(new google.maps.LatLng( data.latitude, data.longitude));
+  }
+
+  getHistory = function() {
+    var positions = [];
+    $.ajax({
+      url: '/api/coordinates/1/all',
+      type: 'GET',
+      success: function(res) {
+        res.forEach(setMarker);
+        //console.log(res.length);
+        // set marker for last element
+        //setMarker(res[res.length -1] );
+         //longitude = res.longitude;
+         //latitude = res.latitude;
+      }
+    });
+  }
+
   updatePosition = function() {
-    var position;
     $.ajax({
       url: '/api/coordinates/1',
       type: 'GET',
@@ -152,6 +174,7 @@
   }
 
   google.maps.event.addDomListener(window, 'load', initialize);
+  getHistory();
   setInterval(updatePosition, 1000);
   </script>
 </body>

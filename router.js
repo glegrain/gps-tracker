@@ -19,6 +19,7 @@ module.exports.setup = function( app ) {
     app.get('/hello', function(req,res) {res.send('Hello World');});
     app.get('/api/coordinates', coordinate.test);
     app.get('/api/coordinates/:id', coordinate.getCurPosition);
+    app.get('/api/coordinates/:id/:n', coordinate.getHistory);
     app.get('/api/coordinates/:id/:latitude/:longitude', coordinate.updatePosition); //TODO:change to PUT or POST
     app.post('/api/coordinates', coordinate.updatePosition);
 

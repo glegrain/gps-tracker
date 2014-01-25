@@ -70,6 +70,8 @@ body {
     
     <li><a href="#">/api/coordinates/:id</a></li>
     
+    <li><a href="#">/api/coordinates/:id/:n</a></li>
+    
   </ul>
   </div>
         </div>
@@ -250,7 +252,11 @@ body {
     </div>
     <div id="getCurPosition" class="panel-collapse collapse">
       <div class="panel-body">
-        <p>Retrieves device position.</p>
+        <p>Retrieves lastest device position.</p>
+
+<p>Notes:</p>
+
+<p>device 1 can be used for testing, it goes from Paris to ESIEE.</p>
 
 <p>Examples:</p>
 
@@ -273,6 +279,64 @@ body {
 
 <ul>
 <li><code>500</code> with a database error</li>
+<li><code>500</code> with a query error</li>
+</ul>
+
+<p>Error Response:</p>
+
+<ul>
+<li>TODO</li>
+</ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#getHistory">
+          GET /api/coordinates/:id/:n
+        </a>
+        <span class="label label-default pull-right">getHistory</span>
+      </h4>
+    </div>
+    <div id="getHistory" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p>Retrieves n last positions for a device.</p>
+
+<p>Notes:</p>
+
+<p>Device 1 can be used for testing, it goes from Paris to ESIEE.<br />  If n is greater than the number of points available, it will return all available points.</p>
+
+<p>Examples:</p>
+
+<p>GET /api/coordinates/1/2<br />   GET /api/coordinates/1/all</p>
+
+<p>Response:</p>
+
+<p>Returns the coordinates associated with a device as an object, as in:</p>
+
+<pre><code>{
+  "id": 2,
+  "device_id": 1,
+  "latitude": 10,
+  "longitude": 10,
+  "timestamp": "2014-01-16T23:44:18.969Z"
+},
+{
+  "id": 2,
+  "device_id": 1,
+  "latitude": 10,
+  "longitude": 11,
+  "timestamp": "2014-01-16T23:44:19.969Z"
+}
+</code></pre>
+
+<p>Errors:</p>
+
+<ul>
+<li><code>500</code> with a database error</li>
+<li><code>500</code> with a query error</li>
 </ul>
 
 <p>Error Response:</p>
