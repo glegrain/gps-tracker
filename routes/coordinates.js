@@ -10,6 +10,7 @@ if (process.env.REDISTOGO_URL) {
     var redis = require("redis").createClient();
 }
 
+var historyLimit = 500; // Adjust history limit with available memory 
 
 // Log redis errors
 // TODO: show error in response (user friendly and developer mode)
@@ -38,7 +39,7 @@ var device1Poistion = {
   "longitude": 2.34963,
   "timestamp": "2014-01-16T23:44:18.969Z"
 };
-var device1History = [];
+//var device1History = [];
 
 var fs = require('fs');
 var fileJSON = fs.readFileSync(__dirname + '/parisESIEE.json');
@@ -51,16 +52,16 @@ var parseCoords  = function(coordinates) {
     position.latitude = coordinates[1];
     position.timestamp = new Date().toISOString();
     // append to history
-    device1History.push(position);
+    //device1History.push(position);
     var key = position.device_id;
     var value = JSON.stringify(position);
     redis.lpush(key, value,function(err, response) {
         if (err) throw err;
-        redis.ltrim(key, 0, 500); // limit storage of only the latest location
+        redis.ltrim(key, 0, historyLimit); // limit storage of only the latest location
     });
 
     // update current position
-    device1Poistion = position;
+    //device1Poistion = position;
     // console.log("\n========");
     // console.log(device1Poistion);
     // console.log("\n========");
@@ -86,7 +87,9 @@ var getNextCoord = function() {
     if (i >= device1Coords.length) { // loop completed, starting over
         i = 0;
         //clear history
-        device1History = [];
+        //device1History = [];
+        // clear db
+        redis.del(1);
     }
     parseCoords(device1Coords[i]);
     i++;
@@ -118,31 +121,48 @@ exports.coordinates = function(req, res) {
     res.send(400, {error: 'please specify a device id'} );
 };
 
-//TODO:CHANGE TO PUT or POST
+
+// FIXME
 exports.updatePosition = function(req, res) {
     console.log('updatingPosition');
     console.log(req.params);
     console.log(req.body);
-    if ( !req.body.coords || (req.body.device_id && req.body.device_name)) {
-        res.send(400, {error: 'please specify coords'} );
+    if ( !req.body.deviceId && req.body.deviceId !== '' ) {
+        res.send(400, {error: 'Please specify a deviceId.'} );
+        return;
+    }
+    if ( !req.body.latitude ) {
+        res.send(400, {error: 'Invalid latitude.'} );
+        return;
+    }
+    if ( !req.body.longitude ) {
+        res.send(400, {error: 'Invalid longitude.'} );
         return;
     }
 
     // TODO: verify lat long format
-    var device_id = req.params.id || req.body.device_id ;
-    var latitude = req.params.latitude || req.body.coords.latitude;
-    var longitude = req.params.longitude || req.body.coords.longitude;
-    //console.log(device_id + ',' + latitude + ',' +longitude);
-    
-    var queryString = 'INSERT INTO coordinates (device_id, latitude, longitude) VALUES ($1, $2, $3 );';
-    client.query(queryString, [device_id, latitude, longitude], function(err, result) {
+    var deviceId = req.params.id || req.body.deviceId ;
+    var latitude = req.params.latitude || req.body.latitude;
+    var longitude = req.params.longitude || req.body.longitude;
+
+
+    var position = Object.create(device1Poistion);
+    position.device_id = deviceId;
+    position.longitude = coordinates[0];
+    position.latitude = coordinates[1];
+    position.timestamp = new Date().toISOString();
+    // append to history
+    //device1History.push(position);
+    var key = position.deviceId;
+    var value = JSON.stringify(position);
+    redis.lpush(key, value,function(err, response) {
         if (err) {
             console.log(err);
-            res.send(500, { error: 'something blew up' });
+            res.send(500, { error: 'something blew up' , message: err.message, raw: err});
             return;
         }
-        console.log(result);
-        //NOTE: show devices ??
+        redis.ltrim(key, 0, historyLimit); // limit storage of only the latest location
+
         res.send(201);
     });
 };
@@ -260,7 +280,7 @@ exports.getHistory = function(req, res) {
  * Examples:
  *
  *    GET /api/coordinates/1
- *    GET /api/coordinates/:id?offset=0limit=1
+ *    GET /api/coordinates/1?offset=0limit=1
  *
  * Response:
  * 

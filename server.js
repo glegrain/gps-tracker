@@ -34,7 +34,7 @@ app.use(function (req, res, next) {
     // Website you wish to allow to connect
     res.setHeader('Access-Control-Allow-Origin', '*');  // '*' all domains
     // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST,  PUT, DELETE');
     // Request headers you wish to allow
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     // Set to true if you need the website to include cookies in the requests sent
@@ -142,7 +142,7 @@ cleanUp = function () {
 
    server.close(function () {
      console.log( "Closed out remaining connections.");
-     // TODO:Close db connections, etc.
+     // TODO: Close db connections, etc.
      process.exit();
    });
 

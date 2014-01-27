@@ -68,9 +68,9 @@ body {
     
     <li><a href="#">/api/devices/:id</a></li>
     
-    <li><a href="#">/api/coordinates/:id</a></li>
+    <li><a href="#">/api/currentLocation/:id</a></li>
     
-    <li><a href="#">/api/coordinates/:id/:n</a></li>
+    <li><a href="#">/api/coordinates/:id</a></li>
     
   </ul>
   </div>
@@ -245,7 +245,7 @@ body {
     <div class="panel-heading">
       <h4 class="panel-title">
         <a data-toggle="collapse" data-parent="#accordion" href="#getCurPosition">
-          GET /api/coordinates/:id
+          GET /api/currentLocation/:id
         </a>
         <span class="label label-default pull-right">getCurPosition</span>
       </h4>
@@ -256,7 +256,7 @@ body {
 
 <p>Notes:</p>
 
-<p>device 1 can be used for testing, it goes from Paris to ESIEE.</p>
+<p>device 1 can be used for testing, it goes from Paris to ESIEE.<br />  Same as GET /api/coordinates/:id?limit=1</p>
 
 <p>Examples:</p>
 
@@ -294,23 +294,23 @@ body {
   <div class="panel panel-default">
     <div class="panel-heading">
       <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#getHistory">
-          GET /api/coordinates/:id/:n
+        <a data-toggle="collapse" data-parent="#accordion" href="#getLocationsForDevice">
+          GET /api/coordinates/:id
         </a>
-        <span class="label label-default pull-right">getHistory</span>
+        <span class="label label-default pull-right">getLocationsForDevice</span>
       </h4>
     </div>
-    <div id="getHistory" class="panel-collapse collapse">
+    <div id="getLocationsForDevice" class="panel-collapse collapse">
       <div class="panel-body">
-        <p>Retrieves n last positions for a device.</p>
+        <p>Retrieves recent known locations.</p>
 
 <p>Notes:</p>
 
-<p>Device 1 can be used for testing, it goes from Paris to ESIEE.<br />  If n is greater than the number of points available, it will return all available points.</p>
+<p>device 1 can be used for testing, it goes from Paris to ESIEE.</p>
 
 <p>Examples:</p>
 
-<p>GET /api/coordinates/1/2<br />   GET /api/coordinates/1/all</p>
+<p>GET /api/coordinates/1<br />   GET /api/coordinates/:id?offset=0limit=1</p>
 
 <p>Response:</p>
 
@@ -322,13 +322,6 @@ body {
   "latitude": 10,
   "longitude": 10,
   "timestamp": "2014-01-16T23:44:18.969Z"
-},
-{
-  "id": 2,
-  "device_id": 1,
-  "latitude": 10,
-  "longitude": 11,
-  "timestamp": "2014-01-16T23:44:19.969Z"
 }
 </code></pre>
 
