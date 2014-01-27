@@ -34,7 +34,7 @@ app.use(function (req, res, next) {
     // Website you wish to allow to connect
     res.setHeader('Access-Control-Allow-Origin', '*');  // '*' all domains
     // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
     // Request headers you wish to allow
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     // Set to true if you need the website to include cookies in the requests sent
@@ -59,7 +59,7 @@ app.use(function(err, req, res, next){
 
 
 app.get('/', function(req, res) {
-  //res.send('<h1>GPS API server</h1><p> View <a href="doc" >Documentation</a></p>');
+  //res.send('<h1>GPS API server</h1><p> View <a href="doc" >Document```  ation</a></p>');
   // var data = fs.readFile( __dirname + '/index.html', function(err, data) {
   //   res.send(data.toString());
   // });

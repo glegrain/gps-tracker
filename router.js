@@ -15,11 +15,15 @@ var coordinate  = require('./routes/coordinates');
 
 module.exports.setup = function( app ) {
 
+    // NOTE: if changing URLs, provide HTTP redirects 
+
     app.get('/api/test', device.test);
     app.get('/hello', function(req,res) {res.send('Hello World');});
-    app.get('/api/coordinates', coordinate.test);
-    app.get('/api/coordinates/:id', coordinate.getCurPosition);
-    app.get('/api/coordinates/:id/:n', coordinate.getHistory);
+    app.get('/api/coordinates', coordinate.coordinates);
+    app.get('/api/coordinates/:id', coordinate.getLocationsForDevice);
+    //app.get('/api/coordinates/:id', coordinate.getCurPosition);  // TODO: change to show all positions, and use offset and limit
+    app.get('/api/currentLocation/:id', coordinate.getCurPosition); //TODO
+    //app.get('/api/coordinates/:id/:n', coordinate.getHistory); //TODO: remove
     app.get('/api/coordinates/:id/:latitude/:longitude', coordinate.updatePosition); //TODO:change to PUT or POST
     app.post('/api/coordinates', coordinate.updatePosition);
 

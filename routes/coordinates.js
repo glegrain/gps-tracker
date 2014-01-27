@@ -1,6 +1,22 @@
 // get db connection
 var client = require('../routes/database.js').getClient();
 
+// get redis connection
+if (process.env.REDISTOGO_URL) {
+    var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+    var redis = require("redis").createClient(rtg.port, rtg.hostname);
+    redis.auth(rtg.auth.split(":")[1]);
+} else {
+    var redis = require("redis").createClient();
+}
+
+
+// Log redis errors
+// TODO: show error in response (user friendly and developer mode)
+ redis.on("error", function (err) {
+        console.log("Error " + err);
+    });
+
 // var Pusher = require('pusher');
 
 // var pusher = new Pusher({
@@ -13,7 +29,7 @@ var client = require('../routes/database.js').getClient();
 
 
 // Demo device
-// reads a geoJson set of coordinates at a specified interval and set current position
+// reads a geoJson set of coordinates at a specified time interval and set current position
 // device1History will hold all the past positions.
 var device1Poistion = {
   "id": 2,
@@ -33,9 +49,16 @@ var parseCoords  = function(coordinates) {
     var position = Object.create(device1Poistion);
     position.longitude = coordinates[0];
     position.latitude = coordinates[1];
-    position.timestamp = new Date();
+    position.timestamp = new Date().toISOString();
     // append to history
     device1History.push(position);
+    var key = position.device_id;
+    var value = JSON.stringify(position);
+    redis.lpush(key, value,function(err, response) {
+        if (err) throw err;
+        redis.ltrim(key, 0, 500); // limit storage of only the latest location
+    });
+
     // update current position
     device1Poistion = position;
     // console.log("\n========");
@@ -85,13 +108,14 @@ client.on('notification', function(msg) {
     // });
 });
 
-exports.test = function(req, res) {
+exports.coordinates = function(req, res) {
     // pusher.trigger('test_channel', 'my_event', {
     //     "message": Date()
     // });
-    res.json(device1History);
+    //res.json(device1History);
     //res.send("Test function executed");
-    console.log("Test function executed, sending history");
+    //console.log("Test function executed, sending history");
+    res.send(400, {error: 'please specify a device id'} );
 };
 
 //TODO:CHANGE TO PUT or POST
@@ -130,6 +154,7 @@ exports.updatePosition = function(req, res) {
  * Notes:
  * 
  *   device 1 can be used for testing, it goes from Paris to ESIEE.
+ *   Same as GET /api/coordinates/:id?limit=1
  *
  * Examples:
  *
@@ -160,8 +185,8 @@ exports.updatePosition = function(req, res) {
  * @param response The standard http response
  */
 exports.getCurPosition = function(req, res) {
-    console.log("gettting current position");
-    getLastPositions(req,res,1);
+    //console.log("gettting current position");
+    getLastPositions(req,res,0,1);
     
 };
 
@@ -225,10 +250,54 @@ exports.getHistory = function(req, res) {
     
 };
 
+/**
+ * Retrieves recent known locations.
+ *
+ * Notes:
+ * 
+ *   device 1 can be used for testing, it goes from Paris to ESIEE.
+ *
+ * Examples:
+ *
+ *    GET /api/coordinates/1
+ *    GET /api/coordinates/:id?offset=0limit=1
+ *
+ * Response:
+ * 
+ *  Returns the coordinates associated with a device as an object, as in:
+ * 
+ *     {
+ *       "id": 2,
+ *       "device_id": 1,
+ *       "latitude": 10,
+ *       "longitude": 10,
+ *       "timestamp": "2014-01-16T23:44:18.969Z"
+ *     }
+ * 
+ * Errors:
+ *
+ *  - `500` with a database error
+ *  - `500` with a query error
+ *
+ * Error Response:
+ *
+ * - TODO
+ *
+ * @param request The standard http request
+ * @param response The standard http response
+ */
+exports.getLocationsForDevice = function(req, res) {
+    var start = req.query.offset || 0;
+    var stop = req.query.limit || -1; // -1 for all
+    getLastPositions(req ,res, start, stop);
+};
 
 
-getLastPositions = function(req, res, n) {
+// private
+getLastPositions = function(req, res, offset, n) {
     var id = parseInt(req.params.id, 10);
+    var start = offset;
+    var stop = n===-1? -1: n - 1; // With redis, -1 is the last element of the list.
 
     // Check if id is an integer
     if (id !== parseInt(id, 10)) {
@@ -237,27 +306,22 @@ getLastPositions = function(req, res, n) {
         return;
     }
 
-    // if device 1, send demo data
-    if ( id === 1 ) {
-        if (n === 1) {
-            res.json(device1Poistion);
-            return;
-        } else if (n === "all") {
-            res.json(device1History);
-            return;
-        } else {
-            res.json(device1History.slice(-n));
+    redis.lrange(id, start, stop, function(err, reply) { // TODO: make sure the list is in the right order
+        if (err) {
+            console.log(err);
+            res.send(500, { error: 'something blew up' , message: err.message, raw: err});
             return;
         }
-    }
 
-    var queryString = 'SELECT * FROM coordinates WHERE coordinates.device_id = $1 ORDER BY timestamp DESC LIMIT $2;';
-    client.query(queryString, [id, n], function(err, result) {
-                if (err) {
-                    console.log(err);
-                    res.send(500, { error: 'something blew up' });
-                    return;
-                }
-                res.json(result.rows[0]);
-         });
+        // parse each array element to JSON 
+        for (var i = 0; i < reply.length ; i++) {
+            reply[i] = JSON.parse(reply[i]);
+        }
+        if (reply.length === 1) {
+            return res.json(reply[0]);
+        }
+        reply.reverse();
+        res.json(reply);
+
+    });
 };

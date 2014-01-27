@@ -147,9 +147,12 @@
   getHistory = function() {
     var positions = [];
     $.ajax({
-      url: '/api/coordinates/1/all',
+      url: '/api/coordinates/1',
       type: 'GET',
       success: function(res) {
+        // res.forEach(function(coordinate) {
+        //   setMarker(JSON.parse(coordinate));
+        // });
         res.forEach(setMarker);
         //console.log(res.length);
         // set marker for last element
@@ -162,7 +165,7 @@
 
   updatePosition = function() {
     $.ajax({
-      url: '/api/coordinates/1',
+      url: '/api/currentLocation/1',
       type: 'GET',
       success: function(res) {
          //console.log(res);
